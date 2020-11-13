@@ -32,4 +32,4 @@ wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
 
 df.to_html('DFS.html')
-test
+
