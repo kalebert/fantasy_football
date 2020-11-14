@@ -32,15 +32,17 @@ qb_df = df[df['FantPos'] == 'QB']
 wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
 
-rushing_columns = ['RushingAtt', 'RushingYDs', 'Y/A', 'RushingTD',]
-receiving_columns = ['Tgt', 'Rec', 'ReceivingYDs', 'Y/R', 'ReceivingTD']
+rushing_columns = ['RushingAtt', 'RushingYDs', 'Y/A', 'RushingTD']
+receving_columns = ['Tgt', 'Rec', 'RecevingYDs', 'Y/R', 'RecevingTD']
 passing_columns = ['PassingAtt', 'PassingYDs', 'PassingTD', 'Int']
 
 def transform_columns(df, new_column_list):
     df = df[['Player', 'Tm', 'Age', 'G'] + new_column_list + ['FL']]
     return df
 
-rb_df = transform_columns(rb_df, rushing_columns+receiving_columns)
-wr_df = transform_columns(wr_df, rushing_columns+receiving_columns)
-te_df = transform_columns(te_df, receiving_columns)
-qb_df = transform_columns(rb_df, passing_columns)
+rb_df = transform_columns(rb_df, rushing_columns+receving_columns)
+wr_df = transform_columns(wr_df, rushing_columns+receving_columns)
+te_df = transform_columns(te_df, receving_columns)
+qb_df = transform_columns(qb_df, passing_columns)
+
+# print(rb_df.head())
