@@ -7,7 +7,8 @@ df = pd.read_csv('2019.csv')
 
 
 #drop uneccessary colums
-df.drop(['Rk', '2PM', '2PP', 'FantPt', 'DKPt', 'FDPt', 'VBD', 'PosRank', 'OvRank', 'PPR', 'Fmb', 'GS'], axis=1, inplace=True)
+df.drop(['Rk', '2PM', '2PP', 'FantPt', 'DKPt', 'FDPt', 'VBD', 'PosRank', 'OvRank', 
+        'PPR', 'Fmb', 'GS'], axis=1, inplace=True)
 
 #fix name formatting
 df['Player'] = df['Player'].apply(lambda x: x.split('*')[0]).apply(lambda x: x.split('\\')[0])
@@ -31,5 +32,15 @@ qb_df = df[df['FantPos'] == 'QB']
 wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
 
-df.to_html('DFS.html')
+rushing_columns = ['RushingAtt', 'RushingYDs', 'Y/A', 'RushingTD',]
+receiving_columns = ['Tgt', 'Rec', 'ReceivingYDs', 'Y/R', 'ReceivingTD']
+passing_columns = ['PassingAtt', 'PassingYDs', 'PassingTD', 'Int']
 
+def transform_columns(df, new_column_list):
+    df = df[['Player', 'Tm', 'Age', 'G'] + new_column_list + ['FL']]
+    return df
+
+rb_df = transform_columns(rb_df, rushing_columns+receiving_columns)
+wr_df = transform_columns(wr_df, rushing_columns+receiving_columns)
+te_df = transform_columns(te_df, receiving_columns)
+qb_df = transform_columns(rb_df, passing_columns)
