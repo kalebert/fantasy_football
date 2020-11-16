@@ -33,4 +33,4 @@ plot = sns.regplot(
     scatter=True,
 )
 
-plt.show()
+# plt.show()
