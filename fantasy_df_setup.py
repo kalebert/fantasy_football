@@ -17,11 +17,11 @@ df['Player'] = df['Player'].apply(lambda x: x.split('*')[0]).apply(lambda x: x.s
 df.rename({
     'TD': 'PassingTD',
     'TD.1': 'RushingTD',
-    'TD.2': 'RecevingTD',
+    'TD.2': 'ReceivingTD',
     'TD.3': 'TotalTD',
     'Yds': 'PassingYDs',
     'Yds.1': 'RushingYDs',
-    'Yds.2': 'RecevingYDs',
+    'Yds.2': 'ReceivingYDs',
     'Att': 'PassingAtt',
     'Att.1': 'RushingAtt'
 }, axis=1, inplace=True)
@@ -33,16 +33,16 @@ wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
 
 rushing_columns = ['RushingAtt', 'RushingYDs', 'Y/A', 'RushingTD']
-receving_columns = ['Tgt', 'Rec', 'RecevingYDs', 'Y/R', 'RecevingTD']
+receiving_columns = ['Tgt', 'Rec', 'ReceivingYDs', 'Y/R', 'ReceivingTD']
 passing_columns = ['PassingAtt', 'PassingYDs', 'PassingTD', 'Int']
 
 def transform_columns(df, new_column_list):
     df = df[['Player', 'Tm', 'Age', 'G'] + new_column_list + ['FL']]
     return df
 
-rb_df = transform_columns(rb_df, rushing_columns+receving_columns)
-wr_df = transform_columns(wr_df, rushing_columns+receving_columns)
-te_df = transform_columns(te_df, receving_columns)
+rb_df = transform_columns(rb_df, rushing_columns+receiving_columns)
+wr_df = transform_columns(wr_df, rushing_columns+receiving_columns)
+te_df = transform_columns(te_df, receiving_columns)
 qb_df = transform_columns(qb_df, passing_columns)
 
 # print(rb_df.head())
