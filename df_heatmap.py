@@ -49,11 +49,11 @@ qb_df = df[df['FantPos'] == 'QB']
 wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
 
-
+# RB Receptions over 5 per game
 rb_df['Rec/G'] = rb_df['Rec']/rb_df['G']
 rb_df = rb_df[rb_df['Rec'] > 5]
 
-
+#Setting up heatmap chart
 qb_df = qb_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
 rb_df = rb_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
 wr_df = wr_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
@@ -100,6 +100,9 @@ fig.set_size_inches(15, 10)
 
 cmap = sns.diverging_palette(0, 250, as_cmap=True)
 
-vizCorrMatrix = sns.heatmap(corrMatrix, cmap=cmap, center=0)
+mask = np.zeros_like(corrMatrix, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+
+vizCorrMatrix = sns.heatmap(corrMatrix, mask=mask, cmap=cmap, center=0)
 
 plt.show()
