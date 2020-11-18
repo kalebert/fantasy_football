@@ -3,6 +3,9 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+pd.options.mode.chained_assignment = None 
+
+
 #import our CSV file 
 df = pd.read_csv('2019.csv')
 
@@ -31,17 +34,31 @@ df['FantasyPoints'] = (df['PassingYDs']*0.04 + df['PassingTD']*4 - df['Int']*2 +
 
 df['FantasyPoints/GM'] = df['FantasyPoints']/df['G']
 
-df = df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
+#Setting up heatmap chart
+#df = df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
 
 #Unfortnately, our DataFrame is limited.
 df = df[df['Tm'] != '2TM']
 df = df[df['Tm'] != '3TM']
+
+"""End Extra Stuff"""
 
 #seperate dataframes based off position
 rb_df = df[df['FantPos'] == 'RB']
 qb_df = df[df['FantPos'] == 'QB']
 wr_df = df[df['FantPos'] == 'WR']
 te_df = df[df['FantPos'] == "TE"]
+
+
+rb_df['Rec/G'] = rb_df['Rec']/rb_df['G']
+rb_df = rb_df[rb_df['Rec'] > 5]
+
+
+qb_df = qb_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
+rb_df = rb_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
+wr_df = wr_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
+te_df = te_df[['Tm', 'FantPos', 'FantasyPoints', 'FantasyPoints/GM']]
+
 
 # Sort players by position rank on respected team
 
@@ -66,6 +83,9 @@ new_names = {
     'WR3': wr3_df
 }
 
+# print(rb2_df)
+
+
 for name, new_df in new_names.items():
     new_df.rename({'FantasyPoints/GM': name}, axis=1, inplace=True)
     new_df.drop(['FantPos', 'FantasyPoints'], axis=1, inplace=True)
@@ -73,4 +93,13 @@ for name, new_df in new_names.items():
 
 df = pd.concat([qb_df, te_df, rb1_df, rb2_df, wr1_df, wr2_df, wr3_df], axis=1)
 
-print(df.head())
+corrMatrix = df.corr()
+
+fig, ax = plt.subplots()
+fig.set_size_inches(15, 10)
+
+cmap = sns.diverging_palette(0, 250, as_cmap=True)
+
+vizCorrMatrix = sns.heatmap(corrMatrix, cmap=cmap, center=0)
+
+plt.show()
