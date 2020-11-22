@@ -32,3 +32,36 @@ defColumnSettings = {
     'axis': 1,
     'inplace': True
 }
+
+for key, url in urls.items():
+
+    response = get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find('table', {'id': 'results'})
+
+    df = pd.read_html(str(table))[0]
+
+    df.columns = df.columns.droplevel(level = 0)
+
+    df.drop(['Results', 'Week', 'G#', 'Opp', 'Unnamed: 7_level_1', 'Age', 'Rk', 'Lg', 'Date', 'Day'], **defColumnSettings)
+
+    df = df[df['Pos'] != 'Pos']
+
+    df.set_index(['Player', 'Pos', 'Tm'], inplace=True)
+
+    if key == 'Passing':
+        df = df[['Yds', 'TD', 'Int', 'Att', 'Cmp']]
+        df.rename({'Yds': 'PassingYds', 'Att': 'PassingAtt', 'Y/A': 'Y/PassingAtt', 'TD': 'PassingTD'}, **defColumnSettings)
+    elif key =='Receiving':
+        df = df[['Rec', 'Tgt', 'Yds', 'TD']]
+        df.rename({'Yds': 'ReceivingYds', 'TD': 'ReceivingTD'}, **defColumnSettings)
+    elif key == 'Rushing':
+        df.drop('Y/A', **defColumnSettings)
+        df.rename({'Att': 'RushingAtt', 'Yds': 'RushingYds', 'TD': 'RushingTD'}, **defColumnSettings)
+    dfs.append(df)
+
+df = dfs[0].join(dfs[1:], how='outer')
+df.fillna(0, inplace=True)
+df = df.astype('int64')
+
+
